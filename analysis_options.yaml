@@ -1,0 +1,11 @@
+# This file configures the analyzer, which statically analyzes Dart code...
+# ...
+
+# La ligne suivante est commentée pour désactiver les lints recommandés
+# include: package:flutter_lints/flutter.yaml
+
+linter:
+  # Vous pouvez ajouter vos propres règles ici si vous le souhaitez
+  rules:
+  # avoid_print: false
+  # prefer_single_quotes: true
