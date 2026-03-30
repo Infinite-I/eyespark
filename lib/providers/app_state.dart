@@ -1,90 +1,84 @@
-import 'dart:ui';
-
-import 'package:flutter/foundation.dart';
-
-/// Represents a detected object for UI display.
-class DetectedObjectInfo {
-  final String label;
-  final Rect boundingBox;
-  final double confidence;
-
-  DetectedObjectInfo({
-    required this.label,
-    required this.boundingBox,
-    required this.confidence,
-  });
-}
+import 'package:flutter/material.dart';
+import '../models/detected_object.dart';
+import '../models/command.dart';
 
 class AppState extends ChangeNotifier {
-  // Camera
-  bool _cameraReady = false;
-  bool get cameraReady => _cameraReady;
-  set cameraReady(bool value) {
-    _cameraReady = value;
+  // 🎥 CAMERA STATE
+  bool cameraReady = false;
+
+  // 👁️ DETECTION STATE
+  List<DetectedObject> _objects = [];
+  Size lastImageSize = Size.zero;
+
+  List<DetectedObject> get objects => _objects;
+
+  set objects(List<DetectedObject> value) {
+    _objects = value;
+    _checkObstacle();
     notifyListeners();
   }
 
-  // Detected objects (from ML Kit)
-  List<DetectedObjectInfo> _detectedObjects = [];
-  List<DetectedObjectInfo> get detectedObjects => List.unmodifiable(_detectedObjects);
-  set detectedObjects(List<DetectedObjectInfo> value) {
-    _detectedObjects = value;
-    notifyListeners();
-  }
-
-  // Bluetooth
-  bool _bluetoothConnected = false;
-  String _bluetoothDeviceName = '';
-  bool get bluetoothConnected => _bluetoothConnected;
-  String get bluetoothDeviceName => _bluetoothDeviceName;
-  void setBluetoothStatus(bool connected, [String deviceName = '']) {
-    _bluetoothConnected = connected;
-    _bluetoothDeviceName = deviceName;
-    notifyListeners();
-  }
-
-  // Voice / Listening
-  bool _isListening = false;
-  bool get isListening => _isListening;
-  set isListening(bool value) {
-    _isListening = value;
-    notifyListeners();
-  }
-
-  // Last command / status message
-  String _lastCommand = '';
-  String get lastCommand => _lastCommand;
-  set lastCommand(String value) {
-    _lastCommand = value;
-    notifyListeners();
-  }
-
-  // History for bottom panel
-  final List<String> _history = [];
-  List<String> get history => List.unmodifiable(_history);
-  void addHistory(String entry) {
-    _history.insert(0, entry);
-    notifyListeners();
-  }
-
-  void setCommand(String cmd) {
-    _lastCommand = cmd;
-    notifyListeners();
-  }
-
-  // Obstacle alert (for "stop" or high-risk detection)
+  // 🚨 OBSTACLE STATE
   bool _obstacleDetected = false;
   bool get obstacleDetected => _obstacleDetected;
-  set obstacleDetected(bool value) {
-    _obstacleDetected = value;
+
+  void _checkObstacle() {
+    _obstacleDetected = _objects.any((o) => o.isObstacle);
+  }
+
+  // 🔵 BLUETOOTH STATE
+  bool bluetoothConnected = false;
+  String bluetoothDeviceName = '';
+
+  void setBluetoothStatus(bool connected, [String name = '']) {
+    bluetoothConnected = connected;
+    bluetoothDeviceName = name;
     notifyListeners();
   }
 
-  // Last processed image size (for overlay coordinate mapping)
-  Size _lastImageSize = Size.zero;
-  Size get lastImageSize => _lastImageSize;
-  set lastImageSize(Size value) {
-    _lastImageSize = value;
+  // 🎤 VOICE STATE
+  bool isListening = false;
+  String lastCommand = '';
+
+  void setListening(bool value) {
+    isListening = value;
+    notifyListeners();
+  }
+
+  void setCommand(String command) {
+    lastCommand = command;
+    notifyListeners();
+  }
+
+  // 📜 COMMAND HISTORY
+  final List<String> _history = [];
+
+  List<String> get history => _history;
+
+  void addHistory(String item) {
+    _history.insert(0, item);
+    notifyListeners();
+  }
+
+  // 🎯 COMMAND PROCESSING
+  Command? _currentCommand;
+
+  Command? get currentCommand => _currentCommand;
+
+  void processCommand(String text) {
+    final cmd = Command.fromText(text);
+    _currentCommand = cmd;
+
+    addHistory("🎤 $text");
+    notifyListeners();
+  }
+
+  // 🔄 RESET SYSTEM
+  void reset() {
+    _objects = [];
+    _obstacleDetected = false;
+    lastCommand = '';
+    _history.clear();
     notifyListeners();
   }
 }

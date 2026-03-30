@@ -1,45 +1,74 @@
 name: eyespark
-description: A smart assistive AI navigation application
-publish_to: 'none'
+description: AI Navigation App
+publish_to: "none"
+
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
+
+  # UI
+  cupertino_icons: ^1.0.6
+
+  # State management
   provider: ^6.1.2
 
+  # Bluetooth
+  flutter_blue_plus: ^1.32.8
+
   # Camera
-  camera: ^0.11.0+2
+  camera: ^0.10.5+5
 
-  # Text-to-Speech
-  flutter_tts: ^4.0.2
+  # Permissions (UPDATED)
+  permission_handler: ^12.0.1
 
-  # Speech Recognition
-  speech_to_text: ^7.0.0
+  # Voice (FIXED CRITICAL ERROR)
+  speech_to_text: ^7.3.0
+  flutter_tts: ^4.2.5
 
-  # Local storage
-  shared_preferences: ^2.2.3
+  # AI / ML
+  tflite_flutter: ^0.10.4
 
-  # AI Object Detection
-  google_mlkit_object_detection: ^0.15.0
-  google_mlkit_commons: ^0.11.0
+  # Networking
+  http: ^1.2.0
 
-  # Permissions
-  permission_handler: ^11.3.1
-
-  # Bluetooth Low Energy
-  flutter_blue_plus: ^1.35.11
-
-  # Path utilities
-  path: ^1.9.0
+  # Animations
+  lottie: ^3.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_lints: ^3.0.1
+
+  # App Icon generator
+  flutter_launcher_icons: ^0.13.1
+
 flutter:
   uses-material-design: true
+
+  assets:
+    # 🔥 IMAGES
+    - assets/images/logo.png
+
+    # 🔥 ICONS
+    - assets/icons/app_icon.png
+
+    # 🔥 MODELS
+    - assets/models/detect.tflite
+    - assets/models/labelmap.txt
+
+    # 🔥 ANIMATIONS (SAFE VERSION)
+    - assets/animations/
+
+# 🔥 APP ICON CONFIG
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  adaptive_icon_background: "#020617"
+  adaptive_icon_foreground: "assets/icons/app_icon.png"
